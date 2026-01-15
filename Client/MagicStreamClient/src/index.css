@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Reset & Base Styles */
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 text-white min-h-screen;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-600;
+  }
+
+  /* Focus visible for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-dark-900;
+  }
+}
+
+/* Custom Utility Classes */
+@layer components {
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .glass-hover {
+    @apply transition-all duration-300;
+  }
+  
+  .glass-hover:hover {
+    @apply bg-white/10 border-white/20;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent;
+  }
+
+  /* Button Base */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white focus:ring-primary-500;
+  }
+  
+  .btn-primary:hover {
+    @apply bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply btn glass text-white focus:ring-primary-500;
+  }
+  
+  .btn-secondary:hover {
+    @apply bg-white/10 border-white/20;
+  }
+
+  .btn-ghost {
+    @apply btn text-white;
+  }
+  
+  .btn-ghost:hover {
+    @apply bg-white/5;
+  }
+
+  /* Input Field */
+  .input {
+    @apply w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 transition-all duration-200;
+  }
+  
+  .input:focus {
+    @apply ring-2 ring-primary-500;
+  }
+
+  /* Card */
+  .card {
+    @apply glass rounded-xl p-6 shadow-xl;
+  }
+
+  /* Shimmer Effect for Loading */
+  .shimmer {
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
