@@ -46,38 +46,51 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-    // Remove from pending requests
     const requestKey = generateRequestKey(response.config);
     pendingRequests.delete(requestKey);
-    
     return response;
   },
   async (error) => {
-    // Remove from pending requests
     if (error.config) {
       const requestKey = generateRequestKey(error.config);
       pendingRequests.delete(requestKey);
     }
 
-    // Ignore aborted requests
+    // Ignore canceled requests
     if (axios.isCancel(error) || error.name === 'CanceledError') {
       return Promise.reject({ canceled: true });
     }
 
     const originalRequest = error.config;
 
-    // If 401 and not already retried, try to refresh token
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthEndpoint =
+      originalRequest?.url?.includes(API_ENDPOINTS.LOGIN) ||
+      originalRequest?.url?.includes(API_ENDPOINTS.REFRESH) ||
+      originalRequest?.url?.includes(API_ENDPOINTS.REGISTER);
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint
+    ) {
       originalRequest._retry = true;
+      if (!localStorage.getItem('user')) {
+        return Promise.reject(error);
+      }
 
       try {
-        await api.post(API_ENDPOINTS.REFRESH);
+        // IMPORTANT: use a bare axios instance
+        await axios.post(
+          `${API_URL}${API_ENDPOINTS.REFRESH}`,
+          {},
+          { withCredentials: true }
+        );
+
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, redirect to login
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
+        // Refresh failed → hard logout
+        localStorage.removeItem('user');
+        window.location.replace('/login');
         return Promise.reject(refreshError);
       }
     }
