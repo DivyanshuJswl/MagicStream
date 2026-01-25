@@ -15,6 +15,7 @@ Server/MagicStreamServer/bin/
 .DS_Store
 .vscode/
 .idea
+/Go
 
 # Environment files
 Client/magic-stream-client/.env
